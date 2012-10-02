@@ -1,0 +1,73 @@
+%link(rel="stylesheet" type="text/css" href="/style.css")
+%h1 Hello #{current_user.name}
+
+%a(href="/logout") Logout
+%br
+%a(href="/list_users") List of users
+%hr
+%br Amount of credit: #{current_user.credit}
+
+- if message != nil
+  %h2 #{message}
+
+%p
+  Your Items:
+%table(border = 1 bgcolor="yellow" bordercolor = "red")
+  %tbody
+    %tr
+      %td(width = "150") Item:
+      %td(width = "100") Price:
+      %td(width = "150") Status:
+      %td(width = "80")
+    %hr
+  - for item in current_user.list_items
+    %tr
+      %td #{item.name}
+      %td #{item.price}
+      %td
+        - if item.active
+          Active
+        - else
+          Inactive
+      %td
+        - if item.active
+          %form( action="/deactivate" method="POST")
+            %input(type="hidden" name="item_name" value="#{item.name}")
+            %input(type="submit" value="Deactivate")
+        - if !item.active
+          %form( action="/activate" method="POST")
+            %input(type="hidden" name="item_name" value="#{item.name}")
+            %input(type="submit" value="Activate")
+
+%hr
+%p
+Items for sale:
+-if true
+  %table(border = 1)
+    %tbody
+      %tr
+        %td(width = "150") Name:
+        %td(width = "100") Price:
+        %td(width = "150") Owner:
+        %td(width = "60")
+        - for user in users
+          - if user != current_user
+            - for item in user.list_items
+              - if user.items.length > 0
+                -if item.active
+                  %tr
+                    %td #{item.name}
+                    %td #{item.price}
+                    %td #{item.ownerName}
+                    %td
+                      %form( action="/buy" method="POST" )
+                        %input(type="hidden" name="owner" value="#{user.name}")
+                        %input(type="hidden" name="item_name" value="#{item.name}")
+                        %input(type="hidden" name="price" value="#{item.price}")
+                        %input(type="hidden" name="buyer" value=current_user)
+                        %input(type="submit" value="Buy")
+
+  %table/
+
+%hr
+Time: #{time.strftime("%H:%M:%S")}

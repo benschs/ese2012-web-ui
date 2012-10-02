@@ -1,0 +1,28 @@
+%h1 List of Users
+%a(href="/logout") Logout
+%br
+%a(href="/") Home
+
+%p
+-for user in users
+  #{user.name}:
+  %table(border = 1)
+    %tbody
+      %tr
+        %td(width = "150") Item:
+        %td(width = "100") Price:
+        %td(width = "150") Status:
+      - for item in user.list_items
+        %tr
+          %td #{item.name}
+          %td #{item.price}
+          %td
+            - if item.active
+              Active
+            - else
+              Inactive
+  %hr
+
+
+%hr
+Time: #{time.strftime("%H:%M:%S")}
